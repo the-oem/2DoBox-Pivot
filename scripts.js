@@ -7,6 +7,7 @@ $(document).ready(pageSetup);
 $('.save-idea').on('click', updateIdea);
 $('.title-storage').on('input', enableSave);
 $('.body-storage').on('input', enableSave);
+$('.search-input').on('input', showSearchResults);
 $('.idea-container')
 	.on('click', '.upvote-icon', upVote)
 	.on('click', '.downvote-icon', downVote)
@@ -139,4 +140,21 @@ function prependIdea(newIdea) {
       </div>
     </article>`
 	);
+}
+
+function toggleDisabled(buttonReference, value) {
+	buttonReference.prop('disabled', value);
+}
+
+function showSearchResults() {
+	var $searchTerm = $(this).val().toUpperCase();
+	if ($searchTerm !== '') {
+		var results = getIdeasFromLocalStorage().filter(function (idea) {
+			return idea.title.toUpperCase().indexOf($searchTerm) > -1 || idea.body.toUpperCase().indexOf($searchTerm) > -1 || idea.quality.toUpperCase().indexOf($searchTerm) > -1;
+		});
+	} else {
+		var results = getIdeasFromLocalStorage();
+	}
+	$('.idea-container').children().remove();
+	writeIdeasToPage(results);
 }
