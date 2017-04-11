@@ -1,7 +1,101 @@
 var keyArray = [];
+var ideaArray = [];
 
 updatedKeyArray();
 onPageLoad();
+
+/***EVENT LISTENTERS**/
+$('.save-idea').on('click', updateIdea);
+$('.title-storage').on('input', enableSave);
+$('.body-storage').on('input', enableSave);
+$('.idea-container')
+  .on('click', '.upvote-icon', upVote)
+  .on('click', '.downvote-icon', downVote)
+  .on('click', '.delete-icon', deleteCard);
+
+
+/***FUNCTIONS*/
+function Idea(title, body) {
+  this.title = title;
+  this.body = body;
+  this.id = Date.now();
+  this.quality = 'quality: swill';
+}
+
+function clearInputFields() {
+  var $title = $('.title-storage');
+  var $body = $('.body-storage');
+  $title.val('');
+  $body.val('');
+  toggleDisabled($('.save-idea'), true);
+  enableSave();
+}
+
+/***REFACTORED FUNCTIONS***/
+
+// $(document).ready(function() {
+//   console.log(ideaArray);
+//   ideaArray = readFromLocalStorage();
+//   ideaArray.forEach(function(idea) {
+//     prependIdea(idea)
+//   })
+// });
+
+function toggleDisabled(element, value) {
+  element.prop('disabled', value);
+}
+
+function writeToLocalStorage(ideaArray) {
+  localStorage.setItem('ideaBoxArray', JSON.stringify(ideaArray));
+}
+
+function readFromLocalStorage() {
+  debugger;
+  return localStorage.getItem(JSON.parse('ideaBoxArray')) || [];
+}
+
+function enableSave() {
+  var $title = $('.title-storage').val();
+  var $body = $('.body-storage').val();
+  if ($title !== '' && $body !== '') {
+    toggleDisabled($('.save-idea'), false);
+  } else {
+    toggleDisabled($('.save-idea'), true);
+  }
+};
+
+function upVote() {
+  var $qualityElement = $(this).parent().find('.quality-text');
+  if ($qualityElement.text() === 'quality: swill') {
+    $qualityElement.text('quality: plausible');
+  } else if ($qualityElement.text() === 'quality: plausible') {
+    $qualityElement.text('quality: genius');
+  };
+};
+
+function downVote() {
+  var $qualityElement = $(this).parent().find('.quality-text');
+  if ($qualityElement.text() === 'quality: genius') {
+    $qualityElement.text('quality: plausible');
+  } else if ($qualityElement.text() === 'quality: plausible') {
+    $qualityElement.text('quality: swill');
+  };
+};
+
+function deleteCard() {
+  var ideaId = $(this).closest('.idea-card').attr('id');
+  localStorage.removeItem(ideaId);
+  $(this).closest('.idea-card').remove();
+};
+
+function updateIdea() {
+  var $title = $('.title-storage').val();
+  var $body = $('.body-storage').val();
+  var $newIdea = new Idea($title, $body);
+  clearInputFields();
+  storeLocally($newIdea);
+  prependIdea($newIdea);
+}
 
 function updatedKeyArray() {
   for (var i = 0; i < localStorage.length; i++) {
@@ -14,60 +108,17 @@ function onPageLoad() {
   retrieveLocally();
 }
 
-$('.save-idea').on('click', function () {
-  var $title = $('.title-storage').val();
-  var $body = $('.body-storage').val();
-  var $id = Date.now();
-  var $newIdea = new Idea($title, $body, $id);
-  clearInputFields();
-  storeLocally($newIdea, $id);
-  prependIdea($newIdea);
-});
-
-function storeLocally(Idea, id) {
-  var stringifiedIdea = JSON.stringify(Idea);
-  localStorage.setItem(id, stringifiedIdea);
+function storeLocally(idea) {
+  var stringifiedIdea = JSON.stringify(idea);
+  localStorage.setItem(idea.id, stringifiedIdea);
 }
 
 function retrieveLocally() {
   var retrievedObject;
-  keyArray.forEach(function (key) {
+  keyArray.forEach(function(key) {
     retrievedObject = JSON.parse(localStorage.getItem(key));
     prependIdea(retrievedObject);
   });
-}
-
-$('.title-storage').on('input', enableSave);
-$('.body-storage').on('input', enableSave);
-
-function clearInputFields() {
-  var $title = $('.title-storage');
-  var $body = $('.body-storage');
-  $title.val('');
-  $body.val('');
-  toggleSaveDisable();
-  enableSave();
-}
-
-function enableSave() {
-  var $title = $('.title-storage').val();
-  var $body = $('.body-storage').val();
-  if ($title !== '' && $body !== '') {
-    toggleSaveDisable(false);
-  } else {
-    toggleSaveDisable(true);
-  }
-}
-
-function toggleSaveDisable(value) {
-  $('.save-idea').prop('disabled', value);
-}
-
-function Idea(title, body, id) {
-  this.title = title;
-  this.body = body;
-  this.id = id;
-  this.quality = 'quality: swill';
 }
 
 function prependIdea(newIdea) {
@@ -77,12 +128,12 @@ function prependIdea(newIdea) {
   var $id = newIdea.id;
   $('.idea-container').prepend(
     `<article class="idea-card" id=
-  ${$id}>
+  ${newIdea.id}>
       <div class="card-header">
-        <h2 contenteditable="true">${$title}</h2>
+        <h2 contenteditable="true">${newIdea.title}</h2>
         <button class="delete-icon" type="button" name="delete-button"></button>
       </div>
-      <p class="body-text" contenteditable="true">${$body}</p>
+      <p class="body-text" contenteditable="true">${newIdea.body}</p>
       <div class="quality-container">
         <button class="upvote-icon" type="button" name="upvote-btn"></button>
         <button class="downvote-icon" type="button" name="downvote-btn"></button>
@@ -91,27 +142,3 @@ function prependIdea(newIdea) {
     </article>`
   );
 }
-
-$('.idea-container').on('click', '.upvote-icon', function () {
-  var $qualityElement = $(this).parent().find('.quality-text');
-  if ($qualityElement.text() === 'quality: swill') {
-    $qualityElement.text('quality: plausible');
-  } else if ($qualityElement.text() === 'quality: plausible') {
-    $qualityElement.text('quality: genius');
-  };
-});
-
-$('.idea-container').on('click', '.downvote-icon', function () {
-  var $qualityElement = $(this).parent().find('.quality-text');
-  if ($qualityElement.text() === 'quality: genius') {
-    $qualityElement.text('quality: plausible');
-  } else if ($qualityElement.text() === 'quality: plausible') {
-    $qualityElement.text('quality: swill');
-  };
-});
-
-$('.idea-container').on('click', '.delete-icon', function () {
-  var ideaId = $(this).closest('.idea-card').attr('id');
-  localStorage.removeItem(ideaId);
-  $(this).closest('.idea-card').remove();
-});
