@@ -1,0 +1,260 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+}
+
+header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  min-height: 300px;
+  background-color: #E5F3F2;
+}
+
+h1 {
+  padding: 25px;
+  color: #00A79D;
+  font-family: 'Roboto Slab', serif;
+  font-size: 50px;
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+.other-color {
+  color: #6D6E71;
+}
+
+input,
+textarea {
+  width: 275px;
+  border: 1px solid rgb(120, 120, 120);
+  border: 1px solid rgba(150,150,150,.5);
+  color: #6D6E71;
+  margin: 15px;
+  padding: 5px;
+  font-family: inherit;
+  font-size: 20px;
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+input:focus,
+textarea:focus {
+  outline: 2px solid rgba(0, 167, 157, 0.2);
+}
+
+textarea {
+  overflow: auto;
+  resize: none;
+  height: 120px;
+  min-height: 120px;
+  max-height: 250px;
+}
+
+.save-idea {
+  border: none;
+  margin-bottom: 25px;
+  background-color: #00A79D;
+  color: #FFFFFF;
+  font-size: 18px;
+}
+
+.save-idea:hover {
+  background-color: #045E55;
+}
+
+.save-idea:disabled {
+  background-color: rgb(188, 255, 251);
+  background-color: rgba(0, 168, 157, 0.4);
+}
+
+main {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.search-input {
+  margin-top: 20px;
+}
+
+article {
+  width: 275px;
+  border-bottom: 1px solid #D1D3D4;
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+.idea-container {
+  margin: 20px 0;
+}
+
+.card-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: baseline;
+      -ms-flex-align: baseline;
+          align-items: baseline;
+  margin: 20px 0;
+}
+
+h2 {
+  color: #6D6E71;
+  font-family: 'Roboto Slab', serif;
+  font-size: 24px;
+}
+
+img {
+  width: 25px;
+  height: 25px;
+}
+
+.body-text {
+  padding: 5px 0;
+  color: #939598;
+  line-height: 130%;
+}
+
+.quality-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 275px;
+}
+
+.quality-text {
+  color: #6D6E71;
+}
+
+.upvote-icon,
+.downvote-icon,
+.quality-text {
+  margin: 15px 0;
+}
+
+.delete-icon {
+  width: 25px;
+  height: 25px;
+  border: none;
+  background: url("assets/delete.svg");
+  background-repeat: no-repeat;
+}
+
+.delete-icon:hover {
+  background-image: url("assets/delete-hover.svg");
+  background-repeat: no-repeat;
+}
+
+.upvote-icon {
+  width: 25px;
+  height: 25px;
+  border: none;
+  margin-right: 25px;
+  background: url("assets/upvote.svg");
+  background-repeat: no-repeat;
+}
+
+.upvote-icon:hover {
+  background: url("assets/upvote-hover.svg");
+  background-repeat: no-repeat;
+}
+
+.downvote-icon {
+  width: 25px;
+  height: 25px;
+  border: none;
+  margin-right: 25px;
+  background: url("assets/downvote.svg");
+  background-repeat: no-repeat;
+}
+
+.downvote-icon:hover {
+  background: url(assets/downvote-hover.svg);
+  background-repeat: no-repeat;
+}
+
+button:focus {
+  outline: 0;
+}
+
+@media(min-width: 600px) {
+  input,
+  textarea,
+  article,
+  .quality-container {
+    width: 400px;
+    -webkit-transition: 1s;
+    transition: 1s;
+  }
+
+  input,
+  textarea {
+    height: 39px;
+  }
+
+  textarea {
+    min-height: 39px;
+  }
+}
+
+@media(min-width: 800px) {
+  h1 {
+    font-size: 60px;
+    -webkit-transition: 1s;
+    transition: 1s;
+  }
+
+  input,
+  textarea,
+  article,
+  .quality-container {
+    width: 500px;
+    -webkit-transition: 1s;
+    transition: 1s;
+  }
+
+  input,
+  textarea {
+    font-size: 24px;
+    height: 45px;
+  }
+
+  .save-idea {
+    font-size: 22px;
+  }
+}
+
+@media(min-width: 1100px) {
+  input,
+  textarea,
+  article,
+  .quality-container {
+    width: 650px;
+    -webkit-transition: 1s;
+    transition: 1s;
+  }
+}
