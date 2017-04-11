@@ -114,7 +114,7 @@ function getIdeasFromLocalStorage() {
 }
 
 function writeIdeasToPage(ideaArray) {
-	ideaArray.forEach(function (idea) {
+	ideaArray.reverse().forEach(function (idea) {
 		prependIdea(idea);
 	})
 }
@@ -124,7 +124,7 @@ function prependIdea(newIdea) {
 	var $body = newIdea.body;
 	var $quality = newIdea.quality;
 	var $id = newIdea.id;
-	$('.idea-container').append(
+	$('.idea-container').prepend(
 		`<article class="idea-card" id=
   ${newIdea.id}>
       <div class="card-header">
