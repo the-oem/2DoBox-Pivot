@@ -1,133 +1,131 @@
-var keyArray = [];
-var ideaArray = [];
+// Document setup
+$(document).ready(pageSetup);
 
-updatedKeyArray();
-onPageLoad();
+//updatedKeyArray();
 
 /***EVENT LISTENTERS**/
 $('.save-idea').on('click', updateIdea);
 $('.title-storage').on('input', enableSave);
 $('.body-storage').on('input', enableSave);
 $('.idea-container')
-  .on('click', '.upvote-icon', upVote)
-  .on('click', '.downvote-icon', downVote)
-  .on('click', '.delete-icon', deleteCard);
+	.on('click', '.upvote-icon', upVote)
+	.on('click', '.downvote-icon', downVote)
+	.on('click', '.delete-icon', deleteCard);
 
 
 /***FUNCTIONS*/
 function Idea(title, body) {
-  this.title = title;
-  this.body = body;
-  this.id = Date.now();
-  this.quality = 'quality: swill';
+	this.id = Date.now();
+	this.title = title;
+	this.body = body;
+	this.quality = 'quality: swill';
 }
 
 function clearInputFields() {
-  var $title = $('.title-storage');
-  var $body = $('.body-storage');
-  $title.val('');
-  $body.val('');
-  toggleDisabled($('.save-idea'), true);
-  enableSave();
+	var $title = $('.title-storage');
+	var $body = $('.body-storage');
+	$title.val('');
+	$body.val('');
+	toggleDisabled($('.save-idea'), true);
+	enableSave();
 }
 
 /***REFACTORED FUNCTIONS***/
 
-// $(document).ready(function() {
-//   console.log(ideaArray);
-//   ideaArray = readFromLocalStorage();
-//   ideaArray.forEach(function(idea) {
-//     prependIdea(idea)
-//   })
-// });
+
+
+function pageSetup() {
+	writeIdeasToPage(getIdeasFromLocalStorage());
+}
 
 function toggleDisabled(element, value) {
-  element.prop('disabled', value);
+	element.prop('disabled', value);
 }
 
-function writeToLocalStorage(ideaArray) {
-  localStorage.setItem('ideaBoxArray', JSON.stringify(ideaArray));
-}
 
-function readFromLocalStorage() {
-  debugger;
-  return localStorage.getItem(JSON.parse('ideaBoxArray')) || [];
-}
 
 function enableSave() {
-  var $title = $('.title-storage').val();
-  var $body = $('.body-storage').val();
-  if ($title !== '' && $body !== '') {
-    toggleDisabled($('.save-idea'), false);
-  } else {
-    toggleDisabled($('.save-idea'), true);
-  }
+	var $title = $('.title-storage').val();
+	var $body = $('.body-storage').val();
+	if ($title !== '' && $body !== '') {
+		toggleDisabled($('.save-idea'), false);
+	} else {
+		toggleDisabled($('.save-idea'), true);
+	}
 };
 
 function upVote() {
-  var $qualityElement = $(this).parent().find('.quality-text');
-  if ($qualityElement.text() === 'quality: swill') {
-    $qualityElement.text('quality: plausible');
-  } else if ($qualityElement.text() === 'quality: plausible') {
-    $qualityElement.text('quality: genius');
-  };
+	var $qualityElement = $(this).parent().find('.quality-text');
+	if ($qualityElement.text() === 'quality: swill') {
+		$qualityElement.text('quality: plausible');
+	} else if ($qualityElement.text() === 'quality: plausible') {
+		$qualityElement.text('quality: genius');
+	};
 };
 
 function downVote() {
-  var $qualityElement = $(this).parent().find('.quality-text');
-  if ($qualityElement.text() === 'quality: genius') {
-    $qualityElement.text('quality: plausible');
-  } else if ($qualityElement.text() === 'quality: plausible') {
-    $qualityElement.text('quality: swill');
-  };
+	var $qualityElement = $(this).parent().find('.quality-text');
+	if ($qualityElement.text() === 'quality: genius') {
+		$qualityElement.text('quality: plausible');
+	} else if ($qualityElement.text() === 'quality: plausible') {
+		$qualityElement.text('quality: swill');
+	};
 };
 
 function deleteCard() {
-  var ideaId = $(this).closest('.idea-card').attr('id');
-  localStorage.removeItem(ideaId);
-  $(this).closest('.idea-card').remove();
+	var $ideaId = $(this).closest('.idea-card').attr('id');
+	var newArray = getIdeasFromLocalStorage().filter(function (idea) {
+		return idea.id != $ideaId;
+	})
+	addIdeaArrayToLocalStorage(newArray);
+	$(this).closest('.idea-card').remove();
 };
 
 function updateIdea() {
-  var $title = $('.title-storage').val();
-  var $body = $('.body-storage').val();
-  var $newIdea = new Idea($title, $body);
-  clearInputFields();
-  storeLocally($newIdea);
-  prependIdea($newIdea);
+	var $title = $('.title-storage').val();
+	var $body = $('.body-storage').val();
+	var $newIdea = new Idea($title, $body);
+	clearInputFields();
+	addIdeaToLocalStorage($newIdea);
+	prependIdea($newIdea);
 }
 
 function updatedKeyArray() {
-  for (var i = 0; i < localStorage.length; i++) {
-    var key = localStorage.key(i);
-    keyArray.push(key);
-  }
+	for (var i = 0; i < localStorage.length; i++) {
+		var key = localStorage.key(i);
+		keyArray.push(key);
+	}
 }
 
-function onPageLoad() {
-  retrieveLocally();
+// STORAGE FUNCTIONS
+
+function addIdeaToLocalStorage(idea) {
+	var ideaArray = getIdeasFromLocalStorage();
+	ideaArray.unshift(idea);
+	addIdeaArrayToLocalStorage(ideaArray);
 }
 
-function storeLocally(idea) {
-  var stringifiedIdea = JSON.stringify(idea);
-  localStorage.setItem(idea.id, stringifiedIdea);
+function addIdeaArrayToLocalStorage(ideas) {
+	localStorage.setItem('ideaBoxArray', JSON.stringify(ideas));
 }
 
-function retrieveLocally() {
-  var retrievedObject;
-  keyArray.forEach(function(key) {
-    retrievedObject = JSON.parse(localStorage.getItem(key));
-    prependIdea(retrievedObject);
-  });
+function getIdeasFromLocalStorage() {
+	return JSON.parse(localStorage.getItem('ideaBoxArray')) || [];
+}
+
+function writeIdeasToPage(ideaArray) {
+	ideaArray.reverse().forEach(function (idea) {
+		prependIdea(idea);
+	})
 }
 
 function prependIdea(newIdea) {
-  var $title = newIdea.title;
-  var $body = newIdea.body;
-  var $quality = newIdea.quality;
-  var $id = newIdea.id;
-  $('.idea-container').prepend(
-    `<article class="idea-card" id=
+	var $title = newIdea.title;
+	var $body = newIdea.body;
+	var $quality = newIdea.quality;
+	var $id = newIdea.id;
+	$('.idea-container').prepend(
+		`<article class="idea-card" id=
   ${newIdea.id}>
       <div class="card-header">
         <h2 contenteditable="true">${newIdea.title}</h2>
@@ -140,5 +138,5 @@ function prependIdea(newIdea) {
         <p class="quality-text">${$quality}</p>
       </div>
     </article>`
-  );
+	);
 }
