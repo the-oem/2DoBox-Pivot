@@ -2,11 +2,11 @@
 $(document).ready(pageSetup);
 
 /***EVENT LISTENTERS**/
-$('.save-idea').on('click', createIdea);
+$('.save-task').on('click', createIdea);
 $('.title-storage').on('input', enableSave);
-$('.body-storage').on('input', enableSave);
-$('.search-input').on('input', showSearchResults);
-$('.idea-container')
+$('.task-storage').on('input', enableSave);
+$('.filter-input').on('input', showSearchResults);
+$('.task-container')
 	.on('click', '.upvote-icon', adjustQuality)
 	.on('click', '.downvote-icon', adjustQuality)
 	.on('click', '.delete-icon', deleteIdea);
@@ -21,7 +21,7 @@ function Idea(title, body) {
 
 function clearInputFields() {
 	$('.title-storage').val('');
-	$('.body-storage').val('');
+	$('.task-storage').val('');
 	enableSave();
 }
 
@@ -35,17 +35,17 @@ function toggleDisabled(element, value) {
 }
 
 function createIdea() {
-	var $newIdea = new Idea($('.title-storage').val(), $('.body-storage').val());
+	var $newIdea = new Idea($('.title-storage').val(), $('.task-storage').val());
 	clearInputFields();
 	addIdeaToLocalStorage($newIdea);
 	prependIdea($newIdea);
 }
 
 function enableSave() {
-	if ($('.title-storage').val() !== '' && $('.body-storage').val() !== '') {
-		toggleDisabled($('.save-idea'), false);
+	if ($('.title-storage').val() !== '' && $('.task-storage').val() !== '') {
+		toggleDisabled($('.save-task'), false);
 	} else {
-		toggleDisabled($('.save-idea'), true);
+		toggleDisabled($('.save-task'), true);
 	}
 };
 
@@ -115,7 +115,7 @@ function writeIdeasToPage(ideaArray) {
 }
 
 function prependIdea(newIdea) {
-	$('.idea-container').prepend(`<article class="idea-card" id=${newIdea.id}>
+	$('.task-container').prepend(`<article class="idea-card" id=${newIdea.id}>
       <div class="card-header"><h2 contenteditable="true">${newIdea.title}</h2>
         <button class="delete-icon" type="button" name="delete-button"></button></div>
       <p class="body-text" contenteditable="true">${newIdea.body}</p>
@@ -134,6 +134,6 @@ function showSearchResults() {
 	} else {
 		var results = getIdeasFromLocalStorage();
 	}
-	$('.idea-container').children().remove();
+	$('.task-container').children().remove();
 	writeIdeasToPage(results);
 }

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Idea Box</title>
+  <title>2Do Box</title>
   <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:700" rel="stylesheet">
@@ -13,14 +13,15 @@
 
 <body>
   <header>
-    <h1 role="banner">idea<span class="other-color">box</span></h1>
+    <h1 role="banner">2Do<span class="other-color">Box</span></h1>
     <input class="title-storage" type="text" name="title" placeholder="Title" aria-required="true">
-    <textarea class="body-storage" rows="1" name="body" placeholder="Body" aria-required="true"></textarea>
-    <input class="save-idea" type="submit" name="save" value="save" disabled>
+    <textarea class="task-storage" rows="1" name="body" placeholder="Task" aria-required="true"></textarea>
+    <input class="save-task" type="submit" name="save" value="save" disabled>
   </header>
   <main role="main">
-    <input class="search-input" role="search" type="text" name="search-box" placeholder="Search">
-    <section class="idea-container">
+
+    <input class="filter-input" role="search" type="text" name="filter-box" placeholder="Filter">
+    <section class="task-container">
     </section>
   </main>
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
