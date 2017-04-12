@@ -6,7 +6,7 @@ $('.save-task').on('click', createCard);
 $('.title-storage').on('input', enableSave);
 $('.task-storage').on('input', enableSave);
 $('.filter-input').on('input', showSearchResults);
-$('.show-completed').on('click', showCompletedTasks)
+
 $('.task-container')
 	.on('input keydown', '.title-text', editCardInline)
 	.on('input keydown', '.body-text', editCardInline)
@@ -14,6 +14,13 @@ $('.task-container')
 	.on('click', '.downvote-icon', adjustImportance)
 	.on('click', '.delete-icon', deleteCard)
 	.on('click', '.complete-task', completeTask);
+$('#filter-btns-section')
+  .on('click', '#show-completed-btn', showFilteredTasks)
+	.on('click','#critical-importance-btn', showFilteredTasks  )
+	.on('click','#high-importance-btn', showFilteredTasks )
+	.on('click','#normal-importance-btn', showFilteredTasks )
+	.on('click','#low-importance-btn', showFilteredTasks )
+	.on('click','#none-importance-btn', showFilteredTasks );
 
 
 /***FUNCTIONS*/
@@ -107,8 +114,31 @@ function completeTask() {
 	// TODO Update the DOM with styling for completed card.
 }
 
-function showCompletedTasks() {
-	writeCardsToPage(getCompletedCardsFromLocalStorage());
+function showFilteredTasks() {
+		$('.task-container').children().remove();
+	switch ($(this).prop('id')) {
+		case 'show-completed-btn':
+		writeCardsToPage(getCompletedCardsFromLocalStorage());
+		break;
+		case 'critical-importance-btn':
+		writeCardsToPage(getCardsByImportanceFromLocalStorage('critical'));
+		break;
+		case 'high-importance-btn':
+		writeCardsToPage(getCardsByImportanceFromLocalStorage('high'));
+		break;
+		case 'normal-importance-btn':
+		writeCardsToPage(getCardsByImportanceFromLocalStorage('normal'));
+		break;
+		case 'low-importance-btn':
+		writeCardsToPage(getCardsByImportanceFromLocalStorage('low'));
+		break;
+		case 'none-importance-btn':
+		writeCardsToPage(getCardsByImportanceFromLocalStorage('none'));
+		break;
+		default:
+			writeCardsToPage(getUncompletedCardsFromLocalStorage());
+	}
+
 }
 
 // STORAGE FUNCTIONS
@@ -138,6 +168,14 @@ function getCompletedCardsFromLocalStorage() {
 		return card.completed == true;
 	})
 	console.log('Completed cards: ' + newArray);
+	return newArray;
+}
+
+function getCardsByImportanceFromLocalStorage(importance) {
+	var newArray = getAllCardsFromLocalStorage().filter(function (card) {
+		return card.importance ==  importance;
+	})
+	console.log('Critical cards: ' + newArray);
 	return newArray;
 }
 
