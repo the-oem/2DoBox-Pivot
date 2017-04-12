@@ -64,7 +64,7 @@ textarea {
   max-height: 250px;
 }
 
-.save-idea {
+.save-task {
   border: none;
   margin-bottom: 25px;
   background-color: #00A79D;
@@ -72,11 +72,11 @@ textarea {
   font-size: 18px;
 }
 
-.save-idea:hover {
+.save-task:hover {
   background-color: #045E55;
 }
 
-.save-idea:disabled {
+.save-task:disabled {
   background-color: rgb(188, 255, 251);
   background-color: rgba(0, 168, 157, 0.4);
 }
@@ -94,7 +94,7 @@ main {
           align-items: center;
 }
 
-.search-input {
+.filter-input {
   margin-top: 20px;
 }
 
@@ -105,7 +105,7 @@ article {
   transition: 1s;
 }
 
-.idea-container {
+.task-container {
   margin: 20px 0;
 }
 
@@ -243,7 +243,7 @@ button:focus {
     height: 45px;
   }
 
-  .save-idea {
+  .save-task{
     font-size: 22px;
   }
 }
