@@ -20,7 +20,14 @@
   </header>
   <main role="main">
     <input class="filter-input" role="search" type="text" name="filter-box" placeholder="Filter">
-    <button type="button" name="show-completed" class="show-completed">Show Completed TODO's</button>
+    <section id="filter-btns-section">
+      <button type="button" name="show-completed" class="show-completed importance-filter-btn">Completed</button>
+        <button type="button" name="critical" class="importance-filter-btn">Critical</button>
+        <button type="button" name="none" class="importance-filter-btn">High</button>
+        <button type="button" name="low" class="importance-filter-btn">Normal</button>
+        <button type="button" name="high" class="importance-filter-btn">low</button>
+        <button type="button" name="critical" class="importance-filter-btn">None</button>
+    </section>
     <section class="task-container">
     </section>
   </main>

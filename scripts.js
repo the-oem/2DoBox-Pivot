@@ -163,7 +163,7 @@ function prependCard(newCard) {
       <div class="importance-container">
         <button class="upvote-icon" type="button" name="upvote-btn"></button><button class="downvote-icon" type="button" name="downvote-btn"></button>
         <p class="importance-text">importance: <span class="importance-value">${newCard.importance}</span></p>
-      </div><button class="complete-task" type="button" name="complete-button">Complete Task</button> : ${newCard.completed}</article>`);
+      </div><button class="complete-task importance-filter-btn" type="button" name="complete-button">Complete Task</button> : ${newCard.completed}</article>`);
 }
 
 function showSearchResults() {

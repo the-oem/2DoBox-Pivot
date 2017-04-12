@@ -150,6 +150,28 @@ img {
   color: #6D6E71;
 }
 
+.importance-filter-btn {
+  flex-grow: 1;
+  height: 30px;
+  margin: 5px;
+  outline: none;
+  background-color: rgb(188, 255, 251);
+  color: #6D6E71;
+}
+
+.importance-filter-btn:hover {
+  cursor: pointer;
+  background-color: #D3D3D3;
+  color: #fff;
+}
+
+#filter-btns-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+}
+
 .upvote-icon,
 .downvote-icon,
 .importance-text {
@@ -205,7 +227,8 @@ button:focus {
   input,
   textarea,
   article,
-  .importance-container {
+  .importance-container,
+  #filter-btns-section {
     width: 400px;
     -webkit-transition: 1s;
     transition: 1s;
@@ -231,7 +254,8 @@ button:focus {
   input,
   textarea,
   article,
-  .importance-container {
+  .importance-container,
+  #filter-btns-section {
     width: 500px;
     -webkit-transition: 1s;
     transition: 1s;
@@ -252,7 +276,8 @@ button:focus {
   input,
   textarea,
   article,
-  .importance-container {
+  .importance-container,
+  #filter-btns-section {
     width: 650px;
     -webkit-transition: 1s;
     transition: 1s;
