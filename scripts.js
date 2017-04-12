@@ -50,10 +50,9 @@ function enableSave() {
 };
 
 function adjustQuality() {
-	var $button = $(this).prop('class');
 	var qualityArray = ['swill', 'plausible', 'genius'];
 	var $qualityValue = $(this).parent().find('.quality-value').text();
-	switch ($button) {
+	switch ($(this).prop('class')) {
 		case 'upvote-icon':
 			var newValue = qualityArray[qualityArray.indexOf($qualityValue) + 1] || $qualityValue;
 			break;
@@ -124,10 +123,6 @@ function prependIdea(newIdea) {
         <button class="upvote-icon" type="button" name="upvote-btn"></button><button class="downvote-icon" type="button" name="downvote-btn"></button>
         <p class="quality-text">quality: <span class="quality-value">${newIdea.quality}</span></p>
       </div></article>`);
-}
-
-function toggleDisabled(buttonReference, value) {
-	buttonReference.prop('disabled', value);
 }
 
 function showSearchResults() {
