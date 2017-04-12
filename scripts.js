@@ -7,9 +7,12 @@ $('.title-storage').on('input', enableSave);
 $('.task-storage').on('input', enableSave);
 $('.filter-input').on('input', showSearchResults);
 $('.task-container')
+  .on('input keydown', '.title-text', editCardInline)
+  .on('input keydown', '.body-text', editCardInline)
 	.on('click', '.upvote-icon', adjustQuality)
 	.on('click', '.downvote-icon', adjustQuality)
 	.on('click', '.delete-icon', deleteCard);
+
 
 /***FUNCTIONS*/
 function Card(title, body) {
@@ -85,8 +88,17 @@ function deleteCard() {
 	deleteCardFromLocalStorage($cardId);
 };
 
-// STORAGE FUNCTIONS
+function editCardInline() {
+  if(event.keyCode === 13) {
+    event.preventDefault();
+    this.blur();
+  }
+  var $cardId = $(this).closest('.task-card').attr('id');
+  updateCard($cardId, 'title', $(this).closest('.task-card').find('.title-text').text());
+  updateCard($cardId, 'body', $(this).closest('.task-card').find('.body-text').text());
+}
 
+// STORAGE FUNCTIONS
 function addCardToLocalStorage(card) {
 	var cardArray = getCardsFromLocalStorage();
 	cardArray.unshift(card);
@@ -116,7 +128,7 @@ function writeCardsToPage(cardArray) {
 
 function prependCard(newCard) {
 	$('.task-container').prepend(`<article class="task-card" id=${newCard.id}>
-      <div class="card-header"><h2 contenteditable="true">${newCard.title}</h2>
+      <div class="card-header"><h2 class="title-text" contenteditable="true">${newCard.title}</h2>
         <button class="delete-icon" type="button" name="delete-button"></button></div>
       <p class="body-text" contenteditable="true">${newCard.body}</p>
       <div class="quality-container">
