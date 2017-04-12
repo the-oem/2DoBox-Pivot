@@ -6,12 +6,14 @@ $('.save-task').on('click', createCard);
 $('.title-storage').on('input', enableSave);
 $('.task-storage').on('input', enableSave);
 $('.filter-input').on('input', showSearchResults);
+$('.show-completed').on('click', showCompletedTasks)
 $('.task-container')
-  .on('input keydown', '.title-text', editCardInline)
-  .on('input keydown', '.body-text', editCardInline)
+	.on('input keydown', '.title-text', editCardInline)
+	.on('input keydown', '.body-text', editCardInline)
 	.on('click', '.upvote-icon', adjustImportance)
 	.on('click', '.downvote-icon', adjustImportance)
-	.on('click', '.delete-icon', deleteCard);
+	.on('click', '.delete-icon', deleteCard)
+	.on('click', '.complete-task', completeTask);
 
 
 /***FUNCTIONS*/
@@ -20,6 +22,7 @@ function Card(title, body) {
 	this.title = title;
 	this.body = body;
 	this.importance = 'normal';
+	this.completed = false;
 }
 
 function clearInputFields() {
@@ -30,7 +33,7 @@ function clearInputFields() {
 
 /***REFACTORED FUNCTIONS***/
 function pageSetup() {
-	writeCardsToPage(getCardsFromLocalStorage());
+	writeCardsToPage(getUncompletedCardsFromLocalStorage());
 }
 
 function toggleDisabled(element, value) {
@@ -53,7 +56,7 @@ function enableSave() {
 };
 
 function adjustImportance() {
-	var importanceArray = ['none', 'low', 'normal','high', 'critical'];
+	var importanceArray = ['none', 'low', 'normal', 'high', 'critical'];
 	var $importanceValue = $(this).parent().find('.importance-value').text();
 	switch ($(this).prop('class')) {
 		case 'upvote-icon':
@@ -73,7 +76,7 @@ function updatePageText(element, value) {
 }
 
 function updateCard(id, property, value) {
-	var newArray = getCardsFromLocalStorage().map(function (card) {
+	var newArray = getAllCardsFromLocalStorage().map(function (card) {
 		if (card.id == id) {
 			card[property] = value;
 		}
@@ -89,24 +92,34 @@ function deleteCard() {
 };
 
 function editCardInline() {
-  if(event.keyCode === 13) {
-    event.preventDefault();
-    this.blur();
-  }
-  var $cardId = $(this).closest('.task-card').attr('id');
-  updateCard($cardId, 'title', $(this).closest('.task-card').find('.title-text').text());
-  updateCard($cardId, 'body', $(this).closest('.task-card').find('.body-text').text());
+	if (event.keyCode === 13) {
+		event.preventDefault();
+		this.blur();
+	}
+	var $cardId = $(this).closest('.task-card').attr('id');
+	updateCard($cardId, 'title', $(this).closest('.task-card').find('.title-text').text());
+	updateCard($cardId, 'body', $(this).closest('.task-card').find('.body-text').text());
+}
+
+function completeTask() {
+	var $cardId = $(this).closest('.task-card').attr('id');
+	updateCard($cardId, 'completed', true);
+	// TODO Update the DOM with styling for completed card.
+}
+
+function showCompletedTasks() {
+	writeCardsToPage(getCompletedCardsFromLocalStorage());
 }
 
 // STORAGE FUNCTIONS
 function addCardToLocalStorage(card) {
-	var cardArray = getCardsFromLocalStorage();
+	var cardArray = getAllCardsFromLocalStorage();
 	cardArray.unshift(card);
 	addCardArrayToLocalStorage(cardArray);
 }
 
 function deleteCardFromLocalStorage(cardId) {
-	var newArray = getCardsFromLocalStorage().filter(function (card) {
+	var newArray = getAllCardsFromLocalStorage().filter(function (card) {
 		return card.id != cardId;
 	})
 	addCardArrayToLocalStorage(newArray);
@@ -116,8 +129,24 @@ function addCardArrayToLocalStorage(cardArray) {
 	localStorage.setItem('cardBoxArray', JSON.stringify(cardArray));
 }
 
-function getCardsFromLocalStorage() {
+function getAllCardsFromLocalStorage() {
 	return JSON.parse(localStorage.getItem('cardBoxArray')) || [];
+}
+
+function getCompletedCardsFromLocalStorage() {
+	var newArray = getAllCardsFromLocalStorage().filter(function (card) {
+		return card.completed == true;
+	})
+	console.log('Completed cards: ' + newArray);
+	return newArray;
+}
+
+function getUncompletedCardsFromLocalStorage() {
+	var newArray = getAllCardsFromLocalStorage().filter(function (card) {
+		return card.completed == false;
+	})
+	console.log('Uncompleted cards: ' + newArray);
+	return newArray;
 }
 
 function writeCardsToPage(cardArray) {
@@ -134,17 +163,17 @@ function prependCard(newCard) {
       <div class="importance-container">
         <button class="upvote-icon" type="button" name="upvote-btn"></button><button class="downvote-icon" type="button" name="downvote-btn"></button>
         <p class="importance-text">importance: <span class="importance-value">${newCard.importance}</span></p>
-      </div></article>`);
+      </div><button class="complete-task importance-filter-btn" type="button" name="complete-button">Complete Task</button> : ${newCard.completed}</article>`);
 }
 
 function showSearchResults() {
 	var $searchTerm = $(this).val().toUpperCase();
 	if ($searchTerm !== '') {
-		var results = getCardsFromLocalStorage().filter(function (card) {
+		var results = getAllCardsFromLocalStorage().filter(function (card) {
 			return card.title.toUpperCase().indexOf($searchTerm) > -1 || card.body.toUpperCase().indexOf($searchTerm) > -1 || card.importance.toUpperCase().indexOf($searchTerm) > -1;
 		});
 	} else {
-		var results = getCardsFromLocalStorage();
+		var results = getAllCardsFromLocalStorage();
 	}
 	$('.task-container').children().remove();
 	writeCardsToPage(results);

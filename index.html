@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>2Do Box</title>
+  <title>2DoBox</title>
   <link rel="stylesheet" href="reset.css">
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:700" rel="stylesheet">
@@ -19,8 +19,15 @@
     <input class="save-task" type="submit" name="save" value="save" disabled>
   </header>
   <main role="main">
-
     <input class="filter-input" role="search" type="text" name="filter-box" placeholder="Filter">
+    <section id="filter-btns-section">
+      <button type="button" name="show-completed" class="show-completed importance-filter-btn">Completed</button>
+        <button type="button" name="critical" class="importance-filter-btn">Critical</button>
+        <button type="button" name="none" class="importance-filter-btn">High</button>
+        <button type="button" name="low" class="importance-filter-btn">Normal</button>
+        <button type="button" name="high" class="importance-filter-btn">low</button>
+        <button type="button" name="critical" class="importance-filter-btn">None</button>
+    </section>
     <section class="task-container">
     </section>
   </main>
