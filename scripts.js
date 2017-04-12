@@ -2,17 +2,17 @@
 $(document).ready(pageSetup);
 
 /***EVENT LISTENTERS**/
-$('.save-task').on('click', createIdea);
+$('.save-task').on('click', createCard);
 $('.title-storage').on('input', enableSave);
 $('.task-storage').on('input', enableSave);
 $('.filter-input').on('input', showSearchResults);
 $('.task-container')
 	.on('click', '.upvote-icon', adjustQuality)
 	.on('click', '.downvote-icon', adjustQuality)
-	.on('click', '.delete-icon', deleteIdea);
+	.on('click', '.delete-icon', deleteCard);
 
 /***FUNCTIONS*/
-function Idea(title, body) {
+function Card(title, body) {
 	this.id = Date.now();
 	this.title = title;
 	this.body = body;
@@ -27,18 +27,18 @@ function clearInputFields() {
 
 /***REFACTORED FUNCTIONS***/
 function pageSetup() {
-	writeIdeasToPage(getIdeasFromLocalStorage());
+	writeCardsToPage(getCardsFromLocalStorage());
 }
 
 function toggleDisabled(element, value) {
 	element.prop('disabled', value);
 }
 
-function createIdea() {
-	var $newIdea = new Idea($('.title-storage').val(), $('.task-storage').val());
+function createCard() {
+	var $newCard = new Card($('.title-storage').val(), $('.task-storage').val());
 	clearInputFields();
-	addIdeaToLocalStorage($newIdea);
-	prependIdea($newIdea);
+	addCardToLocalStorage($newCard);
+	prependCard($newCard);
 }
 
 function enableSave() {
@@ -62,78 +62,78 @@ function adjustQuality() {
 		default:
 	}
 	updatePageText($(this).parent().find('.quality-value'), newValue);
-	updateIdea($(this).closest('.idea-card').attr('id'), 'quality', newValue);
+	updateCard($(this).closest('.task-card').attr('id'), 'quality', newValue);
 }
 
 function updatePageText(element, value) {
 	element.text(value);
 }
 
-function updateIdea(id, property, value) {
-	var newArray = getIdeasFromLocalStorage().map(function (idea) {
-		if (idea.id == id) {
-			idea[property] = value;
+function updateCard(id, property, value) {
+	var newArray = getCardsFromLocalStorage().map(function (card) {
+		if (card.id == id) {
+			card[property] = value;
 		}
-		return idea;
+		return card;
 	});
-	addIdeaArrayToLocalStorage(newArray);
+	addCardArrayToLocalStorage(newArray);
 }
 
-function deleteIdea() {
-	var $ideaId = $(this).closest('.idea-card').attr('id');
-	$(this).closest('.idea-card').remove();
-	deleteIdeaFromLocalStorage($ideaId);
+function deleteCard() {
+	var $cardId = $(this).closest('.task-card').attr('id');
+	$(this).closest('.task-card').remove();
+	deleteCardFromLocalStorage($cardId);
 };
 
 // STORAGE FUNCTIONS
 
-function addIdeaToLocalStorage(idea) {
-	var ideaArray = getIdeasFromLocalStorage();
-	ideaArray.unshift(idea);
-	addIdeaArrayToLocalStorage(ideaArray);
+function addCardToLocalStorage(card) {
+	var cardArray = getCardsFromLocalStorage();
+	cardArray.unshift(card);
+	addCardArrayToLocalStorage(cardArray);
 }
 
-function deleteIdeaFromLocalStorage(ideaId) {
-	var newArray = getIdeasFromLocalStorage().filter(function (idea) {
-		return idea.id != ideaId;
+function deleteCardFromLocalStorage(cardId) {
+	var newArray = getCardsFromLocalStorage().filter(function (card) {
+		return card.id != cardId;
 	})
-	addIdeaArrayToLocalStorage(newArray);
+	addCardArrayToLocalStorage(newArray);
 }
 
-function addIdeaArrayToLocalStorage(ideaArray) {
-	localStorage.setItem('ideaBoxArray', JSON.stringify(ideaArray));
+function addCardArrayToLocalStorage(cardArray) {
+	localStorage.setItem('cardBoxArray', JSON.stringify(cardArray));
 }
 
-function getIdeasFromLocalStorage() {
-	return JSON.parse(localStorage.getItem('ideaBoxArray')) || [];
+function getCardsFromLocalStorage() {
+	return JSON.parse(localStorage.getItem('cardBoxArray')) || [];
 }
 
-function writeIdeasToPage(ideaArray) {
-	ideaArray.reverse().forEach(function (idea) {
-		prependIdea(idea);
+function writeCardsToPage(cardArray) {
+	cardArray.reverse().forEach(function (card) {
+		prependCard(card);
 	})
 }
 
-function prependIdea(newIdea) {
-	$('.task-container').prepend(`<article class="idea-card" id=${newIdea.id}>
-      <div class="card-header"><h2 contenteditable="true">${newIdea.title}</h2>
+function prependCard(newCard) {
+	$('.task-container').prepend(`<article class="task-card" id=${newCard.id}>
+      <div class="card-header"><h2 contenteditable="true">${newCard.title}</h2>
         <button class="delete-icon" type="button" name="delete-button"></button></div>
-      <p class="body-text" contenteditable="true">${newIdea.body}</p>
+      <p class="body-text" contenteditable="true">${newCard.body}</p>
       <div class="quality-container">
         <button class="upvote-icon" type="button" name="upvote-btn"></button><button class="downvote-icon" type="button" name="downvote-btn"></button>
-        <p class="quality-text">quality: <span class="quality-value">${newIdea.quality}</span></p>
+        <p class="quality-text">quality: <span class="quality-value">${newCard.quality}</span></p>
       </div></article>`);
 }
 
 function showSearchResults() {
 	var $searchTerm = $(this).val().toUpperCase();
 	if ($searchTerm !== '') {
-		var results = getIdeasFromLocalStorage().filter(function (idea) {
-			return idea.title.toUpperCase().indexOf($searchTerm) > -1 || idea.body.toUpperCase().indexOf($searchTerm) > -1 || idea.quality.toUpperCase().indexOf($searchTerm) > -1;
+		var results = getCardsFromLocalStorage().filter(function (card) {
+			return card.title.toUpperCase().indexOf($searchTerm) > -1 || card.body.toUpperCase().indexOf($searchTerm) > -1 || card.quality.toUpperCase().indexOf($searchTerm) > -1;
 		});
 	} else {
-		var results = getIdeasFromLocalStorage();
+		var results = getCardsFromLocalStorage();
 	}
 	$('.task-container').children().remove();
-	writeIdeasToPage(results);
+	writeCardsToPage(results);
 }
