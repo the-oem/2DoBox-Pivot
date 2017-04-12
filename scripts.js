@@ -9,8 +9,8 @@ $('.filter-input').on('input', showSearchResults);
 $('.task-container')
   .on('input keydown', '.title-text', editCardInline)
   .on('input keydown', '.body-text', editCardInline)
-	.on('click', '.upvote-icon', adjustQuality)
-	.on('click', '.downvote-icon', adjustQuality)
+	.on('click', '.upvote-icon', adjustImportance)
+	.on('click', '.downvote-icon', adjustImportance)
 	.on('click', '.delete-icon', deleteCard);
 
 
@@ -19,7 +19,7 @@ function Card(title, body) {
 	this.id = Date.now();
 	this.title = title;
 	this.body = body;
-	this.quality = 'swill';
+	this.importance = 'normal';
 }
 
 function clearInputFields() {
@@ -52,20 +52,20 @@ function enableSave() {
 	}
 };
 
-function adjustQuality() {
-	var qualityArray = ['swill', 'plausible', 'genius'];
-	var $qualityValue = $(this).parent().find('.quality-value').text();
+function adjustImportance() {
+	var importanceArray = ['none', 'low', 'normal','high', 'critical'];
+	var $importanceValue = $(this).parent().find('.importance-value').text();
 	switch ($(this).prop('class')) {
 		case 'upvote-icon':
-			var newValue = qualityArray[qualityArray.indexOf($qualityValue) + 1] || $qualityValue;
+			var newValue = importanceArray[importanceArray.indexOf($importanceValue) + 1] || $importanceValue;
 			break;
 		case 'downvote-icon':
-			var newValue = qualityArray[qualityArray.indexOf($qualityValue) - 1] || $qualityValue;
+			var newValue = importanceArray[importanceArray.indexOf($importanceValue) - 1] || $importanceValue;
 			break;
 		default:
 	}
-	updatePageText($(this).parent().find('.quality-value'), newValue);
-	updateCard($(this).closest('.task-card').attr('id'), 'quality', newValue);
+	updatePageText($(this).parent().find('.importance-value'), newValue);
+	updateCard($(this).closest('.task-card').attr('id'), 'importance', newValue);
 }
 
 function updatePageText(element, value) {
@@ -131,9 +131,9 @@ function prependCard(newCard) {
       <div class="card-header"><h2 class="title-text" contenteditable="true">${newCard.title}</h2>
         <button class="delete-icon" type="button" name="delete-button"></button></div>
       <p class="body-text" contenteditable="true">${newCard.body}</p>
-      <div class="quality-container">
+      <div class="importance-container">
         <button class="upvote-icon" type="button" name="upvote-btn"></button><button class="downvote-icon" type="button" name="downvote-btn"></button>
-        <p class="quality-text">quality: <span class="quality-value">${newCard.quality}</span></p>
+        <p class="importance-text">importance: <span class="importance-value">${newCard.importance}</span></p>
       </div></article>`);
 }
 
@@ -141,7 +141,7 @@ function showSearchResults() {
 	var $searchTerm = $(this).val().toUpperCase();
 	if ($searchTerm !== '') {
 		var results = getCardsFromLocalStorage().filter(function (card) {
-			return card.title.toUpperCase().indexOf($searchTerm) > -1 || card.body.toUpperCase().indexOf($searchTerm) > -1 || card.quality.toUpperCase().indexOf($searchTerm) > -1;
+			return card.title.toUpperCase().indexOf($searchTerm) > -1 || card.body.toUpperCase().indexOf($searchTerm) > -1 || card.importance.toUpperCase().indexOf($searchTerm) > -1;
 		});
 	} else {
 		var results = getCardsFromLocalStorage();
