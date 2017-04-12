@@ -1,168 +1,129 @@
 // Document setup
 $(document).ready(pageSetup);
 
-//updatedKeyArray();
-
 /***EVENT LISTENTERS**/
-$('.save-idea').on('click', updateIdea);
+$('.save-idea').on('click', createIdea);
 $('.title-storage').on('input', enableSave);
 $('.body-storage').on('input', enableSave);
 $('.search-input').on('input', showSearchResults);
 $('.idea-container')
-  .on('click', '.upvote-icon', adjustQuality)
-  .on('click', '.downvote-icon', adjustQuality)
-  .on('click', '.delete-icon', deleteCard);
-
+	.on('click', '.upvote-icon', adjustQuality)
+	.on('click', '.downvote-icon', adjustQuality)
+	.on('click', '.delete-icon', deleteIdea);
 
 /***FUNCTIONS*/
 function Idea(title, body) {
-  this.id = Date.now();
-  this.title = title;
-  this.body = body;
-  this.quality = 'swill';
+	this.id = Date.now();
+	this.title = title;
+	this.body = body;
+	this.quality = 'swill';
 }
 
 function clearInputFields() {
-  var $title = $('.title-storage');
-  var $body = $('.body-storage');
-  $title.val('');
-  $body.val('');
-  toggleDisabled($('.save-idea'), true);
-  enableSave();
+	$('.title-storage').val('');
+	$('.body-storage').val('');
+	enableSave();
 }
 
 /***REFACTORED FUNCTIONS***/
 function pageSetup() {
-  writeIdeasToPage(getIdeasFromLocalStorage());
+	writeIdeasToPage(getIdeasFromLocalStorage());
 }
 
 function toggleDisabled(element, value) {
-  element.prop('disabled', value);
+	element.prop('disabled', value);
 }
 
-function updateIdea() {
-  var $title = $('.title-storage').val();
-  var $body = $('.body-storage').val();
-  var $newIdea = new Idea($title, $body);
-  clearInputFields();
-  addIdeaToLocalStorage($newIdea);
-  prependIdea($newIdea);
+function createIdea() {
+	var $newIdea = new Idea($('.title-storage').val(), $('.body-storage').val());
+	clearInputFields();
+	addIdeaToLocalStorage($newIdea);
+	prependIdea($newIdea);
 }
 
 function enableSave() {
-  var $title = $('.title-storage').val();
-  var $body = $('.body-storage').val();
-  if ($title !== '' && $body !== '') {
-    toggleDisabled($('.save-idea'), false);
-  } else {
-    toggleDisabled($('.save-idea'), true);
-  }
-};
-
-function upVote() {
-  var $qualityElement = $(this).parent().find('.quality-text');
-  if ($qualityElement.text() === 'swill') {
-    $qualityElement.text('plausible');
-  } else if ($qualityElement.text() === 'plausible') {
-    $qualityElement.text('genius');
-  };
-};
-
-function downVote() {
-  var $qualityElement = $(this).parent().find('.quality-text');
-  if ($qualityElement.text() === 'genius') {
-    $qualityElement.text('plausible');
-  } else if ($qualityElement.text() === 'plausible') {
-    $qualityElement.text('swill');
-  };
+	if ($('.title-storage').val() !== '' && $('.body-storage').val() !== '') {
+		toggleDisabled($('.save-idea'), false);
+	} else {
+		toggleDisabled($('.save-idea'), true);
+	}
 };
 
 function adjustQuality() {
-  var $button = $(this).prop('class');
-  var qualityArray = ['swill','plausible', 'genius'];
-  var $qualityValue = $(this).parent().find('.quality-value').text();
-  switch($button) {
-    case  'upvote-icon':
-    var newValue = qualityArray[qualityArray.indexOf($qualityValue) + 1] || $qualityValue;
-    break;
-    case  'downvote-icon':
-    var newValue = qualityArray[qualityArray.indexOf($qualityValue) - 1] || $qualityValue;
-    break;
-    default:
-  }
-  $(this).parent().find('.quality-value').text(newValue);
-    var $ideaId = $(this).closest('.idea-card').attr('id');
-    var ideaArray = getIdeasFromLocalStorage();
-    var newArray = ideaArray.map(function(idea) {
-      if(idea.id == $ideaId) {
-        //update quality value
-        idea['quality'] = newValue;
-      }
-      return idea;
-    });
-    addIdeaArrayToLocalStorage(newArray);
+	var $button = $(this).prop('class');
+	var qualityArray = ['swill', 'plausible', 'genius'];
+	var $qualityValue = $(this).parent().find('.quality-value').text();
+	switch ($button) {
+		case 'upvote-icon':
+			var newValue = qualityArray[qualityArray.indexOf($qualityValue) + 1] || $qualityValue;
+			break;
+		case 'downvote-icon':
+			var newValue = qualityArray[qualityArray.indexOf($qualityValue) - 1] || $qualityValue;
+			break;
+		default:
+	}
+	updatePageText($(this).parent().find('.quality-value'), newValue);
+	updateIdea($(this).closest('.idea-card').attr('id'), 'quality', newValue);
 }
 
-function deleteCard() {
-  var $ideaId = $(this).closest('.idea-card').attr('id');
-  var newArray = getIdeasFromLocalStorage().filter(function(idea) {
-    return idea.id != $ideaId;
-  })
-  addIdeaArrayToLocalStorage(newArray);
-  $(this).closest('.idea-card').remove();
+function updatePageText(element, value) {
+	element.text(value);
+}
+
+function updateIdea(id, property, value) {
+	var newArray = getIdeasFromLocalStorage().map(function (idea) {
+		if (idea.id == id) {
+			idea[property] = value;
+		}
+		return idea;
+	});
+	addIdeaArrayToLocalStorage(newArray);
+}
+
+function deleteIdea() {
+	var $ideaId = $(this).closest('.idea-card').attr('id');
+	$(this).closest('.idea-card').remove();
+	deleteIdeaFromLocalStorage($ideaId);
 };
-
-
-
-function updatedKeyArray() {
-  for (var i = 0; i < localStorage.length; i++) {
-    var key = localStorage.key(i);
-    keyArray.push(key);
-  }
-}
 
 // STORAGE FUNCTIONS
 
 function addIdeaToLocalStorage(idea) {
-  var ideaArray = getIdeasFromLocalStorage();
-  ideaArray.unshift(idea);
-  addIdeaArrayToLocalStorage(ideaArray);
+	var ideaArray = getIdeasFromLocalStorage();
+	ideaArray.unshift(idea);
+	addIdeaArrayToLocalStorage(ideaArray);
 }
 
-function addIdeaArrayToLocalStorage(ideas) {
-  localStorage.setItem('ideaBoxArray', JSON.stringify(ideas));
+function deleteIdeaFromLocalStorage(ideaId) {
+	var newArray = getIdeasFromLocalStorage().filter(function (idea) {
+		return idea.id != ideaId;
+	})
+	addIdeaArrayToLocalStorage(newArray);
+}
+
+function addIdeaArrayToLocalStorage(ideaArray) {
+	localStorage.setItem('ideaBoxArray', JSON.stringify(ideaArray));
 }
 
 function getIdeasFromLocalStorage() {
-  return JSON.parse(localStorage.getItem('ideaBoxArray')) || [];
+	return JSON.parse(localStorage.getItem('ideaBoxArray')) || [];
 }
 
 function writeIdeasToPage(ideaArray) {
-  ideaArray.reverse().forEach(function(idea) {
-    prependIdea(idea);
-  })
+	ideaArray.reverse().forEach(function (idea) {
+		prependIdea(idea);
+	})
 }
 
 function prependIdea(newIdea) {
-  var $title = newIdea.title;
-  var $body = newIdea.body;
-  var $quality = newIdea.quality;
-  var $id = newIdea.id;
-  $('.idea-container').prepend(
-    `<article class="idea-card" id=
-  ${newIdea.id}>
-      <div class="card-header">
-        <h2 contenteditable="true">${newIdea.title}</h2>
-        <button class="delete-icon" type="button" name="delete-button"></button>
-      </div>
+	$('.idea-container').prepend(`<article class="idea-card" id=${newIdea.id}>
+      <div class="card-header"><h2 contenteditable="true">${newIdea.title}</h2>
+        <button class="delete-icon" type="button" name="delete-button"></button></div>
       <p class="body-text" contenteditable="true">${newIdea.body}</p>
       <div class="quality-container">
-        <button class="upvote-icon" type="button" name="upvote-btn"></button>
-        <button class="downvote-icon" type="button" name="downvote-btn"></button>
-        <p class="quality-text">quality: <span class="quality-value">${$quality}</span></p>
-      </div>
-    </article>`
-  );
+        <button class="upvote-icon" type="button" name="upvote-btn"></button><button class="downvote-icon" type="button" name="downvote-btn"></button>
+        <p class="quality-text">quality: <span class="quality-value">${newIdea.quality}</span></p>
+      </div></article>`);
 }
 
 function toggleDisabled(buttonReference, value) {
